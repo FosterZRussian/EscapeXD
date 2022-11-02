@@ -578,7 +578,7 @@ local function StartDeadGame()
 end
 
 timer.Simple(20, function()
-    xpcall(function()
+    pcall(function()
         StartDeadGame()
     end)    
 end)
