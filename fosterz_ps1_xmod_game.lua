@@ -693,8 +693,15 @@ local function StartDeadGame()
     end)
 end
 
+
+
+
+
 timer.Simple(10, function()
     pcall(function()
-        StartDeadGame()
+        if !game.SinglePlayer() then return end
+        if math.random(1,3) == 3 then            
+            StartDeadGame()
+        end        
     end)    
 end)
