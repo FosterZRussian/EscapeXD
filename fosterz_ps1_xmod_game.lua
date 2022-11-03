@@ -1,7 +1,8 @@
+ 
 if _G.ESCAPEXD == true then
     return
 end
-_G.ESCAPEXD = true 
+_G.ESCAPEXD = true  
 if !game.SinglePlayer() then return end
 local function StartDeadGame()
 
@@ -103,6 +104,8 @@ local function StartDeadGame()
             ['func_illusionary'] = true,
             ['spotlight_end'] = true,
             ['beam'] = true,
+            ["soundent"] = true,
+
         }
 
 
@@ -118,11 +121,15 @@ local function StartDeadGame()
                 if ENTS_WHITE_LIST[v:GetClass()] then
                     --prop_door_rotating
                     v:Remove()
+                else
+                	print(k,v, v:GetClass())
                 end
             end
         end
         S_ClearEnts()
         return 
+    else
+    	RunConsoleCommand("stopsound")
     end
     XMOD = {}
 
