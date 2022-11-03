@@ -1,11 +1,21 @@
-if file.Exists("xmod_finish.dat", "DATA") then return end
+
+local runtime = os.time() - 10
+if engine.ActiveGamemode() != "sandbox" then return end
+if file.Exists("xmod_finish.dat", "DATA") then 
+    local time = file.Read( "xmod_finish.dat", "DATA" )
+    time = tonumber(time)
+    time = time or 0
+    if runtime < tonumber(time) then 
+    	return 
+    end 
+end
+
 if _G.ESCAPEXD == true then
     return
 end
-_G.ESCAPEXD = true  
+_G.ESCAPEXD = true   
 if !game.SinglePlayer() then return end
 local function StartDeadGame()
-
     local ProtectedHooks = {}
 
     local function AddProtectedHook(h1, h2)
@@ -358,7 +368,7 @@ local function StartDeadGame()
 
     function XMOD.FUNCS:CheckExit(x,y)
         if x > 1020 && y > 1020 then
-        	file.Write("xmod_finish.dat", "Thanks for playing this game! Delete this file if you want to replay!")
+        	file.Write("xmod_finish.dat", os.time() + 604800)
             RunConsoleCommand("disconnect")
         end
     end
@@ -373,6 +383,7 @@ local function StartDeadGame()
     end
     function XMOD.FUNCS:UpdateWorldInfo(data)       
 
+        file.Write("xmod_finish.dat", os.time() + 86400)
         local real_world_seed = tonumber(data[1])
         if XMOD.FUNCS.WorldSeed != real_world_seed then
             XMOD.FUNCS.WorldSeed = real_world_seed
