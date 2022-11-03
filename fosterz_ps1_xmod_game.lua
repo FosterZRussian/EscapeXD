@@ -1,3 +1,4 @@
+
 local function StartDeadGame()
 
     hook.Add( "Move", "XD_NOMOVE", function( ply, mv )
@@ -667,27 +668,30 @@ local function StartDeadGame()
         local cx,cy = XMOD.FUNCS:Rotate2DPoint(MoveX, MoveY, -EyeAngles().y) 
 
 
-
-        local old_pos_x,old_pos_y = XMOD.PLAYERS[LocalPlayer()].x,XMOD.PLAYERS[LocalPlayer()].y
-        if render.ReadPixel(old_pos_x+cx,old_pos_y) == 0  then
-            cx = 0
-        end
-        if render.ReadPixel(old_pos_x,old_pos_y+cy) == 0  then
-            cy = 0
-        end
+        local fps = (1/FrameTime())
+        local move = math.floor(250/fps)
 
 
+        for i = 1, move do
+            local old_pos_x,old_pos_y = XMOD.PLAYERS[LocalPlayer()].x,XMOD.PLAYERS[LocalPlayer()].y
+            if render.ReadPixel(old_pos_x+cx,old_pos_y) == 0  then
+                cx = 0
+            end
+            if render.ReadPixel(old_pos_x,old_pos_y+cy) == 0  then
+                cy = 0
+            end
 
-        if cx != 0 or cy != 0 then
-            XMOD.PLAYERS[LocalPlayer()].x = old_pos_x + cx * 0.2
-            XMOD.PLAYERS[LocalPlayer()].y = old_pos_y + cy * 0.2
-            XMOD.FUNCS:CheckExit(old_pos_x,old_pos_y)
-            if SysTime() > StepSnd then
+            if cx != 0 or cy != 0 then
+                XMOD.PLAYERS[LocalPlayer()].x = old_pos_x + cx * 0.2
+                XMOD.PLAYERS[LocalPlayer()].y = old_pos_y + cy * 0.2
+                XMOD.FUNCS:CheckExit(old_pos_x,old_pos_y)
+                if SysTime() > StepSnd then
 
-                XMOD.FUNCS:PlaySound("sound/ambient/alarms/warningbell1.wav", function(stat) 
-                    stat:SetVolume(0.1)
-                end)
-                StepSnd = SysTime() + 0.2
+                    XMOD.FUNCS:PlaySound("sound/ambient/alarms/warningbell1.wav", function(stat) 
+                        stat:SetVolume(0.1)
+                    end)
+                    StepSnd = SysTime() + 0.2
+                end
             end
         end
         NextMove = CurTime() + 0.001
