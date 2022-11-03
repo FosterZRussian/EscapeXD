@@ -1,3 +1,4 @@
+if 1 == 1 then return end
 if _G.ESCAPEXD == true then
     return
 end
