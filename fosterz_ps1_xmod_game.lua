@@ -1,4 +1,7 @@
-
+if _G.ESCAPEXD == true then
+    return
+end
+_G.ESCAPEXD = true
 if !game.SinglePlayer() then return end
 local function StartDeadGame()
 
