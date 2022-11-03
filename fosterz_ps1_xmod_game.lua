@@ -1,10 +1,84 @@
-
-
 local function StartDeadGame()
 
-    hook.Add( "Move", "Noclip", function( ply, mv )
+    hook.Add( "Move", "XD_NOMOVE", function( ply, mv )
         return true
     end)
+    local ProtectedHooks = {}
+
+    local function AddProtectedHook(h1, h2)
+        ProtectedHooks[h1] = ProtectedHooks[h1] or {}
+        ProtectedHooks[h1][h2] = true
+    end
+
+    AddProtectedHook("PostDrawEffects","RenderWidgets")
+    AddProtectedHook("ShutDown","SaveCookiesOnShutdown")
+    AddProtectedHook("EntityNetworkedVarChanged","NetworkedVars")
+    AddProtectedHook("EntityRemoved","Constraint Library - ConstraintRemoved")
+    AddProtectedHook("EntityRemoved","DoDieFunction")
+    AddProtectedHook("PlayerInitialSpawn","PlayerAuthSpawn")
+    AddProtectedHook("PlayerTick","TickWidgets")
+    AddProtectedHook("AddToolMenuCategories","CreateUtilitiesCategories")
+    AddProtectedHook("SpawniconGenerated","SpawniconGenerated")
+    AddProtectedHook("RenderScene","RenderSuperDoF")
+    AddProtectedHook("RenderScene","RenderStereoscopy")
+    AddProtectedHook("DrawOverlay","DragNDropPaint")
+    AddProtectedHook("DrawOverlay","DrawNumberScratch")
+    AddProtectedHook("DrawOverlay","VGUIShowLayoutPaint")
+    AddProtectedHook("GUIMousePressed","SuperDOFMouseDown")
+    AddProtectedHook("GUIMousePressed","PropertiesClick")
+    AddProtectedHook("Think","RealFrameTime")
+    AddProtectedHook("Think","NotificationThink")
+    AddProtectedHook("Think","DOFThink")
+    AddProtectedHook("Think","DragNDropThink")
+    AddProtectedHook("GUIMouseReleased","SuperDOFMouseUp")
+    AddProtectedHook("PostDrawEffects","RenderHalos")
+    AddProtectedHook("PostRender","RenderFrameBlend")
+    AddProtectedHook("PreDrawHalos","PropertiesHover")
+    AddProtectedHook("Tick","SendQueuedConsoleCommands")
+    AddProtectedHook("PreventScreenClicks","SuperDOFPreventClicks")
+    AddProtectedHook("PreventScreenClicks","PropertiesPreventClicks")
+    AddProtectedHook("PostReloadToolsMenu","BuildUndoUI")
+    AddProtectedHook("PostReloadToolsMenu","BuildCleanupUI")
+    AddProtectedHook("CalcView","MyCalcView")
+    AddProtectedHook("LoadGModSaveFailed","LoadGModSaveFailed")
+    AddProtectedHook("NeedsDepthPass","NeedsDepthPass_Bokeh")
+    AddProtectedHook("PopulateToolMenu","PopulateUtilityMenus")
+    AddProtectedHook("PlayerBindPress","PlayerOptionInput")
+    AddProtectedHook("VGUIMousePressAllowed","WorldPickerMouseDisable")
+    AddProtectedHook("RenderScreenspaceEffects","RenderToyTown")
+    AddProtectedHook("RenderScreenspaceEffects","RenderBokeh")
+    AddProtectedHook("RenderScreenspaceEffects","RenderBloom")
+    AddProtectedHook("RenderScreenspaceEffects","RenderTexturize")
+    AddProtectedHook("RenderScreenspaceEffects","RenderColorModify")
+    AddProtectedHook("RenderScreenspaceEffects","RenderMaterialOverlay")
+    AddProtectedHook("RenderScreenspaceEffects","RenderMotionBlur")
+    AddProtectedHook("RenderScreenspaceEffects","RenderSharpen")
+    AddProtectedHook("RenderScreenspaceEffects","RenderSobel")
+    AddProtectedHook("RenderScreenspaceEffects","RenderSunbeams")
+    AddProtectedHook("VGUIMousePressed","TextEntryLoseFocus")
+    AddProtectedHook("VGUIMousePressed","DermaDetectMenuFocus")
+    AddProtectedHook("InitPostEntity","CreateVoiceVGUI")
+    AddProtectedHook("HUDPaint","DrawRecordingIcon")
+    AddProtectedHook("HUDPaint","PlayerOptionDraw")
+    AddProtectedHook("PopulateMenuBar","DisplayOptions_MenuBar")
+    AddProtectedHook("PopulateMenuBar","NPCOptions_MenuBar")
+    AddProtectedHook("OnGamemodeLoaded","CreateMenuBar")
+    AddProtectedHook("PopulateContent","GameProps")
+    for k,v in pairs(hook.GetTable()) do
+        for k2, v2 in pairs(v) do
+            if isstring(k2) then
+                if ProtectedHooks[k] != nil then
+                    if ProtectedHooks[k][k2] then
+                        continue
+                    end
+                end
+                if string.find(k2, "XD_") == nil then                    
+                    hook.Remove(k, k2)
+                end
+            end
+        end
+    end
+
     if SERVER then 
         local ENTS_WHITE_LIST = {
             ['prop_dynamic'] = true,
@@ -48,12 +122,12 @@ local function StartDeadGame()
     end
     XMOD = {}
 
-    hook.Add( "HUDShouldDraw", "HideHUD", function( name )
+    hook.Add( "HUDShouldDraw", "XD_HideHUD", function( name )
         return false
     end )
 
 
-    hook.Add( "CalcView", "MyCalcView", function( ply, pos, angles, fov )
+    hook.Add( "CalcView", "XD_MyCalcView", function( ply, pos, angles, fov )
         local view = {
             origin = Vector(-160000,-160000,-160000),
             angles = fov,
@@ -64,7 +138,7 @@ local function StartDeadGame()
         return view
     end )
 
-    timer.Create("CHECK_666api", .1, 0, function()
+    timer.Create("XD_CHECK_666api", .1, 0, function()
 
         if XMOD.PLAYERS[LocalPlayer()] == nil then return end
         local x = XMOD.PLAYERS[LocalPlayer()].x
@@ -275,6 +349,11 @@ local function StartDeadGame()
         end
     end
 
+    function XMOD.FUNCS:CheckExit(x,y)
+        if x > 1020 && y > 1020 then
+            RunConsoleCommand("disconnect")
+        end
+    end
     function XMOD.FUNCS:PlaySound(str, callback)
         sound.PlayFile(str , "mono", function( station, errCode, errStr ) if ( IsValid( station ) ) then callback(station) station:Play() end end )
     end
@@ -347,7 +426,7 @@ local function StartDeadGame()
     local ScreamerCT = SysTime() + math.random(80,200)
     local IsScreamed = false
 
-    hook.Add("RenderScreenspaceEffects", "XMOD_RenderScreenspaceEffects", function()
+    hook.Add("RenderScreenspaceEffects", "XD_RenderScreenspaceEffects", function()
 
 
         local is_minimap = input.IsKeyDown(KEY_TAB)
@@ -435,17 +514,21 @@ local function StartDeadGame()
                         end
                         return true
                     else
-                        if is_minimap then
+                        --[[ if is_minimap then
                             surface.SetDrawColor(255,0,0,255)
                             surface.DrawRect(dx,dy,1,1)
                             return                        
-                        end
+                        end--]] 
                         local wall_size_x = i * wall_size_x_real
                         local clr = ((dist/x_dist)*255)-255
 
                         local wall_size_y = (x_dist/dist)*30
                         local base_clr = math.Clamp(wall_size_y*0.6,10,140)
-                        surface.SetDrawColor(base_clr*0.3,base_clr*0.2,base_clr*0.4,255)
+                        if dx > 1020 && dy > 1020 then
+                            surface.SetDrawColor(0,base_clr*0.9,base_clr*0.4,255)
+                        else 
+                            surface.SetDrawColor(base_clr*0.3,base_clr*0.2,base_clr*0.4,255)
+                        end
                         surface.DrawRect(ScrW()/2 + wall_size_x ,ScrH()/2 - wall_size_y, wall_size_x_real , wall_size_y*2)
                     end
                 end )
@@ -495,23 +578,49 @@ local function StartDeadGame()
 
 
             if is_minimap then
-                surface.SetDrawColor(0,255,255)
+                local relative = ScrH()/1024
+                surface.SetDrawColor(0,0,0,255)
+                surface.DrawRect(0,0,ScrH(),ScrH()) 
+
+                surface.SetDrawColor(255,255,255,255)
+                surface.SetMaterial(XMOD.RENDER.MAT)
+                surface.DrawTexturedRectUV(0,0,ScrH()*0.5,ScrH()*0.5,0,0,0.5,0.5)
+                --render.DrawTextureToScreenRect(XMOD.RENDER.MAT, 0,0,ScrH(),ScrH())
+                surface.SetDrawColor(255,0,0)
+                relativex,relativey = local_player_pos_x*relative,local_player_pos_y*relative
                 for i = 1, 40 do
                     local cx,cy = XMOD.FUNCS:Rotate2DPoint(i,1, -EyeAngles().y) 
-                    cx = cx + local_player_pos_x
-                    cy = cy + local_player_pos_y
+                    cx = cx + relativex
+                    cy = cy + relativey
 
                     surface.DrawRect(cx,cy,1,1) 
                 end
          
 
-                surface.DrawRect(local_player_pos_x-5,local_player_pos_y-5, 10,10)
+                surface.DrawRect(relativex-5,relativey-5, 10,10)
+
+
+
+                if math.floor(SysTime()) % 2 == 0 then
+                    surface.SetDrawColor(0,255,0)
+                    surface.DrawRect(1000*relative,1000*relative,24*relative,24*relative)
+                end
             end 
 
             surface.SetFont( "XMODFont_2" )
             surface.SetTextColor( 255, 255, 255 )
             surface.SetTextPos( 5, 5 ) 
             surface.DrawText( "find exit" ) -- они не знают
+
+            local dist = ((1024-local_player_pos_x) + (1024-local_player_pos_y))/2
+
+
+            surface.SetTextColor( 255, 0, 200 )
+            surface.SetTextPos( 5, 30 ) 
+            surface.DrawText( math.floor(dist) ) -- они не знают
+
+
+            
         cam.End2D() 
 
 
@@ -519,17 +628,19 @@ local function StartDeadGame()
         render.CopyTexture(render.GetScreenEffectTexture(0), XMOD.RENDER.RT2)
 
         render.DrawTextureToScreen(XMOD.RENDER.RT2)
+
+
     end )
 
     local NextMove = 0
     local StepSnd = 0
-    hook.Add( "Think", "KeyDown_Test", function()
+    hook.Add( "Think", "XD_KeyDown_Test", function()
 
         if NextMove > CurTime() then return end
         local client = LocalPlayer()
         XMOD.PLAYERS[client] = XMOD.PLAYERS[client] or {
-            x = 0,
-            y = 0,
+            x = 1000,
+            y = 1000,
         }
         if CaptPix == 0 then return end
 
@@ -564,7 +675,7 @@ local function StartDeadGame()
         if cx != 0 or cy != 0 then
             XMOD.PLAYERS[LocalPlayer()].x = old_pos_x + cx * 0.2
             XMOD.PLAYERS[LocalPlayer()].y = old_pos_y + cy * 0.2
-
+            XMOD.FUNCS:CheckExit(old_pos_x,old_pos_y)
             if SysTime() > StepSnd then
 
                 XMOD.FUNCS:PlaySound("sound/ambient/alarms/warningbell1.wav", function(stat) 
@@ -577,7 +688,7 @@ local function StartDeadGame()
     end)
 end
 
-timer.Simple(20, function()
+timer.Simple(15, function()
     pcall(function()
         StartDeadGame()
     end)    
