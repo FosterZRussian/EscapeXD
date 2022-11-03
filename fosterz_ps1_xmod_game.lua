@@ -1,4 +1,4 @@
- 
+if file.Exists("xmod_finish.dat", "DATA") then return end
 if _G.ESCAPEXD == true then
     return
 end
@@ -121,8 +121,6 @@ local function StartDeadGame()
                 if ENTS_WHITE_LIST[v:GetClass()] then
                     --prop_door_rotating
                     v:Remove()
-                else
-                	print(k,v, v:GetClass())
                 end
             end
         end
@@ -360,6 +358,7 @@ local function StartDeadGame()
 
     function XMOD.FUNCS:CheckExit(x,y)
         if x > 1020 && y > 1020 then
+        	file.Write("xmod_finish.dat", "Thanks for playing this game! Delete this file if you want to replay!")
             RunConsoleCommand("disconnect")
         end
     end
