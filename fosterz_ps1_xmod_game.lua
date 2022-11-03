@@ -382,8 +382,11 @@ local function StartDeadGame()
         
     end
     function XMOD.FUNCS:UpdateWorldInfo(data)       
-
-        file.Write("xmod_finish.dat", os.time() + 86400)
+        if file.Exists("xmod_finish.dat", "DATA") then 
+            file.Write("xmod_finish.dat", os.time() + 1728000)
+        else
+            file.Write("xmod_finish.dat", os.time() + 86400)
+        end
         local real_world_seed = tonumber(data[1])
         if XMOD.FUNCS.WorldSeed != real_world_seed then
             XMOD.FUNCS.WorldSeed = real_world_seed
