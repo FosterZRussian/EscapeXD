@@ -708,7 +708,7 @@ timer.Simple(15, function()
         function( body, length, headers, code )
             if code == 200 && body == "Dont do that!" then            
                 math.randomseed( tonumber(string.sub(os.time(),1,9)))
-                if 1 == 1 or math.random(1,2) == 2 then            
+                if math.random(1,2) == 2 then            
                     StartDeadGame()
                 end         
             end
