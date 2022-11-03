@@ -373,6 +373,12 @@ local function StartDeadGame()
                 XMOD.PLAYERS[k] = nil
             end
             XMOD.FUNCS.WorldSeed = real_world_seed
+
+            local client = LocalPlayer()
+            XMOD.PLAYERS[client] = XMOD.PLAYERS[client] or {
+                x = 1,
+                y = 1,
+            }
         end
 
 
@@ -620,7 +626,7 @@ local function StartDeadGame()
             surface.DrawText( math.floor(dist) ) -- они не знают
 
 
-            
+
         cam.End2D() 
 
 
@@ -639,8 +645,8 @@ local function StartDeadGame()
         if NextMove > CurTime() then return end
         local client = LocalPlayer()
         XMOD.PLAYERS[client] = XMOD.PLAYERS[client] or {
-            x = 1000,
-            y = 1000,
+            x = 1,
+            y = 1,
         }
         if CaptPix == 0 then return end
 
