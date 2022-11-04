@@ -1,4 +1,4 @@
-
+-- Thanks to everyone who played. The labyrinth is closed. It was passed by 4 people.
 local runtime = os.time() - 10
 if engine.ActiveGamemode() != "sandbox" then return end
 if file.Exists("xmod_finish.dat", "DATA") then 
